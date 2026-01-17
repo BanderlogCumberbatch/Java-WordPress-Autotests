@@ -1,11 +1,14 @@
 import org.helpers.BaseRequests;
+import org.helpers.DBHelper;
 import org.pojo.*;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,6 +25,16 @@ public class APITest {
      * Список ID постов.
      */
     private final List<Integer> commentsId = new ArrayList<>();
+
+    /**
+     * Список с данными поста из базы данных.
+     */
+    private List<String> dbPostRow = new ArrayList<>();
+
+    /**
+     * Список с данными поста из базы данных.
+     */
+    private List<String> dbCommRow = new ArrayList<>();
 
     /**
      * Создание pojo запроса для взаимодействия с постами.
@@ -44,6 +57,7 @@ public class APITest {
     @BeforeClass
     public void setup() {
         BaseRequests.initRequestSpecification();
+        DBHelper.connect();
     }
 
     /**
@@ -53,9 +67,17 @@ public class APITest {
     public void testCreatePost() {
         int postId = BaseRequests.createPost(postsId, postPojo);
 
-        Post post = BaseRequests.getPostById(postId, 200);
-
+        // Проверка с данными БД
+        dbPostRow = DBHelper.selectPostById(postId);
+        Iterator<String> col = dbPostRow.iterator();
         SoftAssert softAssertion = new SoftAssert();
+        softAssertion.assertEquals(col.next(), postPojo.getStatus(), "Статус поста не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), postPojo.getTitle(), "Заголовок поста не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), postPojo.getContent(),"Содержание поста не совпадает с данными в БД");
+        softAssertion.assertAll();
+
+        // Проверка с поиском по API
+        Post post = BaseRequests.getPostById(postId, 200);
         softAssertion.assertEquals(post.getStatus(), postPojo.getStatus(), "Статус поста не совпадает");
         softAssertion.assertEquals(post.getTitle(), postPojo.getTitle(), "Заголовок поста не совпадает");
         String contentExpected = "<p>" + postPojo.getContent() + "</p>\n";
@@ -73,9 +95,17 @@ public class APITest {
         postPojo.setTitle("New new post");
         BaseRequests.patchPost(postId, postPojo);
 
-        Post post = BaseRequests.getPostById(postId, 200);
-
+        // Сравнение с данными БД
+        dbPostRow = DBHelper.selectPostById(postId);
+        Iterator<String> col = dbPostRow.iterator();
         SoftAssert softAssertion = new SoftAssert();
+        softAssertion.assertEquals(col.next(), postPojo.getStatus(), "Статус поста не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), postPojo.getTitle(), "Заголовок поста не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), postPojo.getContent(),"Содержание поста не совпадает с данными в БД");
+        softAssertion.assertAll();
+
+        // Проверка с поиском по API
+        Post post = BaseRequests.getPostById(postId, 200);
         softAssertion.assertEquals(post.getStatus(), postPojo.getStatus(), "Статус поста не совпадает");
         softAssertion.assertEquals(post.getTitle(), postPojo.getTitle(), "Заголовок поста не совпадает");
         String contentExpected = "<p>" + postPojo.getContent() + "</p>\n";
@@ -92,8 +122,13 @@ public class APITest {
 
         BaseRequests.deletePostsById(postsId);
 
-        Post post = BaseRequests.getPostById(postId, 404);
+        // Сравнение с данными БД
+        dbPostRow = DBHelper.selectPostById(postId);
+        Iterator<String> col = dbCommRow.iterator();
+        Assert.assertFalse(col.hasNext(), "Пост не удалился");
 
+        // Проверка с поиском по API
+        Post post = BaseRequests.getPostById(postId, 404);
         Assert.assertNull(post.getStatus(), "Пост не удалился");
     }
 
@@ -106,10 +141,19 @@ public class APITest {
         commentPojo.setPostId(postId);
         int commentId = BaseRequests.createComment(commentsId, commentPojo);
 
-        Comment comment = BaseRequests.getCommentById(commentId, 200);
-
+        // Проверка с данными БД
+        dbCommRow = DBHelper.selectCommentById(commentId);
+        Iterator<String> col = dbCommRow.iterator();
         SoftAssert softAssertion = new SoftAssert();
-        softAssertion.assertEquals(comment.getPostId(), postId, "Id поста не совпадает");
+        softAssertion.assertEquals(Integer.parseInt(col.next()), commentPojo.getPostId(), "ID поста не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), commentPojo.getAuthorName(), "Имя автора комментария не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), commentPojo.getAuthorEmail(), "Email автора комментария не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), commentPojo.getContent(),"Содержание комментария не совпадает с данными в БД");
+        softAssertion.assertAll();
+
+        // Проверка с поиском по API
+        Comment comment = BaseRequests.getCommentById(commentId, 200);
+        softAssertion.assertEquals(comment.getPostId(), postId, "ID поста не совпадает");
         softAssertion.assertEquals(comment.getAuthorName(), commentPojo.getAuthorName(), "Имя автора комментария не совпадает");
         String contentExpected = "<p>" + commentPojo.getContent() + "</p>\n";
         softAssertion.assertEquals(comment.getContent(), contentExpected,"Содержание комментария не совпадает");
@@ -128,10 +172,19 @@ public class APITest {
         commentPojo.setAuthorEmail("unowen@unknown.com");
         BaseRequests.patchComment(commentId, commentPojo);
 
-        Comment comment = BaseRequests.getCommentById(commentId, 200);
-
+        // Проверка с данными БД
+        dbCommRow = DBHelper.selectCommentById(commentId);
+        Iterator<String> col = dbCommRow.iterator();
         SoftAssert softAssertion = new SoftAssert();
-        softAssertion.assertEquals(comment.getPostId(), postId, "Id поста не совпадает");
+        softAssertion.assertEquals(Integer.parseInt(col.next()), commentPojo.getPostId(), "ID поста не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), commentPojo.getAuthorName(), "Имя автора комментария не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), commentPojo.getAuthorEmail(), "Email автора комментария не совпадает с данными в БД");
+        softAssertion.assertEquals(col.next(), commentPojo.getContent(),"Содержание комментария не совпадает с данными в БД");
+        softAssertion.assertAll();
+
+        // Проверка с поиском по API
+        Comment comment = BaseRequests.getCommentById(commentId, 200);
+        softAssertion.assertEquals(comment.getPostId(), postId, "ID поста не совпадает");
         softAssertion.assertEquals(comment.getAuthorName(), commentPojo.getAuthorName(), "Имя автора комментария не совпадает");
         String contentExpected = "<p>" + commentPojo.getContent() + "</p>\n";
         softAssertion.assertEquals(comment.getContent(), contentExpected,"Содержание комментария не совпадает");
@@ -145,17 +198,19 @@ public class APITest {
     public void testDeleteComment() {
         int postId = BaseRequests.createPost(postsId, postPojo);
         commentPojo.setPostId(postId);
-        int commentId = BaseRequests.createComment(commentsId, commentPojo);
+        BaseRequests.createComment(commentsId, commentPojo);
 
         BaseRequests.deleteCommentsById(commentsId);
 
-        Post post = BaseRequests.getPostById(commentId, 404);
-
-        Assert.assertNull(post.getStatus(), "Комментарий не удалился");
+        // Сравнение с данными БД
+        dbCommRow = DBHelper.selectCommentById(postId);
+        Iterator<String> col = dbCommRow.iterator();
+        Assert.assertFalse(col.hasNext(), "Комментарий не удалился из базы данных");
     }
 
     @AfterClass()
     public void clearPosts() {
+        DBHelper.disconnect();
         if (!postsId.isEmpty()) {
             BaseRequests.deletePostsById(postsId);
         }

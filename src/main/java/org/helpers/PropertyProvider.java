@@ -49,4 +49,3 @@ public final class PropertyProvider {
         return properties.getProperty(key);
     }
 }
-

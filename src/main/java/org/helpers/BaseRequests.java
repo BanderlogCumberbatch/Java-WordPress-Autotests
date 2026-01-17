@@ -7,9 +7,8 @@ import io.restassured.response.Response;
 import java.util.List;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.requestSpecification;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.IsEqual.equalTo;
-
 import org.pojo.Comment;
 import org.pojo.Post;
 
@@ -38,12 +37,14 @@ public final class BaseRequests {
     /**
      * Логин для WordPress.
      */
-    private static final String USERNAME = PropertyProvider.getInstance().getProperty("api.username");
+    private static final String USERNAME = PropertyProvider
+            .getInstance().getProperty("api.username");
 
     /**
      * Пароль для WordPress.
      */
-    private static final String PASSWORD = PropertyProvider.getInstance().getProperty("api.password");
+    private static final String PASSWORD = PropertyProvider
+            .getInstance().getProperty("api.password");
 
     /**
      * Подготовка спецификации запроса.
@@ -79,7 +80,7 @@ public final class BaseRequests {
                     .post(WP_POSTS)
                 .then()
                     .statusCode(201)
-                    .body("id", is(instanceOf(Integer.class)))
+                    .body("id", instanceOf(Integer.class))
                     .body("status", equalTo(postPojo.getStatus()))
                     .body("title.rendered", equalTo(postPojo.getTitle()))
                     .body("content.rendered", equalTo(contentExpected))
@@ -180,7 +181,7 @@ public final class BaseRequests {
                     .post(WP_COMMENTS)
                 .then()
                     .statusCode(201)
-                    .body("id", is(instanceOf(Integer.class)))
+                    .body("id", instanceOf(Integer.class))
                     .body("post", equalTo(commentPojo.getPostId()))
                     .body("author_name", equalTo(commentPojo.getAuthorName()))
                     .body("author_email", equalTo(commentPojo.getAuthorEmail()))
@@ -236,7 +237,7 @@ public final class BaseRequests {
                     .extract().response();
 
         return Comment.builder()
-                .postId(response.jsonPath().getInt("post"))
+                .postId((response.jsonPath().getInt("post")))
                 .authorName(response.jsonPath().getString("author_name"))
                 .authorEmail(response.jsonPath().getString("author_email"))
                 .content(response.jsonPath().getString("content.rendered"))
