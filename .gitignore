@@ -2,4 +2,3 @@
 allure-results
 target
 src/test/resources/secrets.properties
-README.md
