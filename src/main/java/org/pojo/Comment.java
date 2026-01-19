@@ -1,5 +1,6 @@
 package org.pojo;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,19 +8,27 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Post {
+public class Comment {
+    /**
+     * ID поста.
+     */
+    @Builder.Default
+    @SerializedName("post")
+    private int postId = 0;
 
     /**
      * Статус записи.
      */
     @Builder.Default
-    private String status = "private";
+    @SerializedName("author_name")
+    private String authorName = "Unknown";
 
     /**
      * Название записи.
      */
     @Builder.Default
-    private String title = "sample title";
+    @SerializedName("author_email")
+    private String authorEmail = "unknown@unknown.com";
 
     /**
      * Содержимое записи.
@@ -27,3 +36,4 @@ public class Post {
     @Builder.Default
     private String content = "sample text";
 }
+
