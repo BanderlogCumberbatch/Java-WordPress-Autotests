@@ -34,7 +34,7 @@ public final class DeletePostTests extends BaseTest {
         BaseRequests.deletePostsById(postsId);
 
         Post post = BaseRequests.getPostById(postId, 404);
-        Assert.assertNull(post.getStatus(), "Пост не удалился");
+        Assert.assertNull(post.getContent(), "Пост не удалился");
     }
 
 }

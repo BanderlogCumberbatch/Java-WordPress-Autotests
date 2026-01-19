@@ -234,12 +234,16 @@ public final class BaseRequests {
                     .statusCode(statusCode)
                     .extract().response();
 
-        return Comment.builder()
-                .postId((response.jsonPath().getInt("post")))
+        Comment.CommentBuilder commentBuilder = Comment.builder()
                 .authorName(response.jsonPath().getString("author_name"))
                 .authorEmail(response.jsonPath().getString("author_email"))
-                .content(response.jsonPath().getString("content.rendered"))
-                .build();
+                .content(response.jsonPath().getString("content.rendered"));
+
+        if (statusCode != 404) {
+            commentBuilder.postId((response.jsonPath().getInt("post")));
+        }
+
+        return commentBuilder.build();
     }
 
     /**

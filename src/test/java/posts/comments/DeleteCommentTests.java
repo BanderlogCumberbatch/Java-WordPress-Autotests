@@ -2,6 +2,7 @@ package posts.comments;
 
 import org.helpers.BaseRequests;
 import org.helpers.DBHelper;
+import org.pojo.Comment;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -36,7 +37,8 @@ public final class DeleteCommentTests extends CommentsBaseTest {
 
         BaseRequests.deleteCommentsById(commentsId);
 
-        //
+        Comment comment = BaseRequests.getCommentById(postId, 404);
+        Assert.assertNull(comment.getContent(), "Пост не удалился");
     }
 
 }
