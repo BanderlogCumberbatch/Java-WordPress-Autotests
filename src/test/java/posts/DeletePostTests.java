@@ -8,6 +8,9 @@ import org.testng.annotations.Test;
 
 import java.util.Iterator;
 
+/**
+ * Тесты удаления поста.
+ */
 public final class DeletePostTests extends BaseTest {
 
     /**

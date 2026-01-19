@@ -8,6 +8,9 @@ import org.testng.asserts.SoftAssert;
 
 import java.util.Iterator;
 
+/**
+ * Тесты создания комментария.
+ */
 public final class CreateCommentTests extends CommentsBaseTest {
 
     /**

@@ -8,6 +8,9 @@ import org.testng.asserts.SoftAssert;
 
 import java.util.Iterator;
 
+/**
+ * Тесты изменения комментария.
+ */
 public final class ChangeCommentTests extends CommentsBaseTest {
 
     /**

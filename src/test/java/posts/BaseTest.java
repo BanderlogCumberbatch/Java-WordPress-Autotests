@@ -10,6 +10,9 @@ import org.testng.annotations.BeforeClass;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Базовый класс для тестов.
+ */
 public abstract class BaseTest {
 
     /**

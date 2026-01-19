@@ -8,6 +8,9 @@ import org.testng.annotations.Test;
 
 import java.util.Iterator;
 
+/**
+ * Тесты удаления комментария.
+ */
 public final class DeleteCommentTests extends CommentsBaseTest {
 
     /**

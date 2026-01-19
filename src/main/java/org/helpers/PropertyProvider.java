@@ -16,15 +16,15 @@ public final class PropertyProvider {
     /**
      * Файл properties. по умолчанию
      */
-    private static final String propertyFile = "env_local.properties";
+    private static final String propertiesFile = "env_local.properties";
 
     /**
      * Загрузка .properties-файла.
-     * @param propertyFile имя .properties-файла в папке resources
+     * @param propertiesFile имя .properties-файла в папке resources
      */
-    public PropertyProvider(String propertyFile) {
+    public PropertyProvider(final String propertiesFile) {
         try (InputStream input = getClass().getClassLoader()
-                .getResourceAsStream(propertyFile)) {
+                .getResourceAsStream(propertiesFile)) {
             properties.load(input);
         } catch (Exception e) {
             throw new RuntimeException("Failed to load properties file", e);
@@ -36,7 +36,7 @@ public final class PropertyProvider {
      */
     public PropertyProvider() {
         try (InputStream input = getClass().getClassLoader()
-                .getResourceAsStream(propertyFile)) {
+                .getResourceAsStream(propertiesFile)) {
             properties.load(input);
         } catch (Exception e) {
             throw new RuntimeException("Failed to load properties file", e);

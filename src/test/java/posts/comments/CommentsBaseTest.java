@@ -6,6 +6,9 @@ import posts.BaseTest;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Базовый класс для тестов комментариев.
+ */
 public abstract class CommentsBaseTest extends BaseTest {
 
     /**

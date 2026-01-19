@@ -13,6 +13,8 @@ import java.util.Properties;
  */
 public final class DBHelper {
 
+    private DBHelper() { }
+
     private static Connection connection;
     private static Statement statement;
 
@@ -22,7 +24,7 @@ public final class DBHelper {
      * @param user пользователь БД WordPress
      * @param password пароль БД WordPress
      */
-    public static void connect(String baseUrl, String user, String password) {
+    public static void connect(final String baseUrl, final String user, final String password) {
         try {
             System.out.println("Открывается соединение с БД");
             Properties props = new Properties();

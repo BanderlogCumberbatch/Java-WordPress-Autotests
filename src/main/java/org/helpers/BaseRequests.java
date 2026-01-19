@@ -45,7 +45,9 @@ public final class BaseRequests {
      * @param username логин для WordPress
      * @param password пароль для WordPress
      */
-    public static void initRequestSpecification(String baseUrl, String username, String password) {
+    public static void initRequestSpecification(String baseUrl,
+                                                String username,
+                                                String password) {
 
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RequestSpecBuilder requestSpecBuilder = new RequestSpecBuilder();
@@ -108,7 +110,7 @@ public final class BaseRequests {
                 .patch(WP_POSTS + "/{id}")
             .then()
                 .statusCode(200)
-                .body("id", equalTo(postId),"status",
+                .body("id", equalTo(postId), "status",
                         equalTo(postPojo.getStatus()), "title.rendered",
                         equalTo(postPojo.getTitle()), "content.rendered",
                         equalTo(contentExpected));

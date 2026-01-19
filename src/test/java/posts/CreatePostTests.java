@@ -8,6 +8,9 @@ import org.testng.asserts.SoftAssert;
 
 import java.util.Iterator;
 
+/**
+ * Тесты создания поста.
+ */
 public final class CreatePostTests extends BaseTest {
 
     /**
