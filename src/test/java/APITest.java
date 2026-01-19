@@ -1,5 +1,6 @@
 import org.helpers.BaseRequests;
 import org.helpers.DBHelper;
+import org.helpers.PropertyProvider;
 import org.pojo.*;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -54,10 +55,26 @@ public class APITest {
             .content("sample content")
             .build();
 
+    /**
+     * Экземпляр PropertyProvider с загруженными локальными параметрами.
+     */
+    private final PropertyProvider envLocalProvider = new PropertyProvider();
+
+    /**
+     * Экземпляр с загруженными секретами.
+     */
+    private final PropertyProvider secretsProvider = new PropertyProvider("secrets.properties");
+
     @BeforeClass
     public void setup() {
-        BaseRequests.initRequestSpecification();
-        DBHelper.connect();
+        BaseRequests.initRequestSpecification(
+                envLocalProvider.getProperty("base.url"),
+                secretsProvider.getProperty("api.username"),
+                secretsProvider.getProperty("api.password"));
+        DBHelper.connect(
+                envLocalProvider.getProperty("db.url"),
+                secretsProvider.getProperty("db.user"),
+                secretsProvider.getProperty("db.password"));
     }
 
     /**

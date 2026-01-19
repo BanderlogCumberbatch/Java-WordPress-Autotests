@@ -17,26 +17,19 @@ public final class DBHelper {
     private static Statement statement;
 
     /**
-     * Экземпляр PropertyProvider с загруженными локальными параметрами.
-     */
-    private static final PropertyProvider envLocalProvider = new PropertyProvider();
-
-    /**
-     * Экземпляр PropertyProvider с загруженными секретами.
-     */
-    private static final PropertyProvider secretsProvider = new PropertyProvider("secrets.properties");
-
-    /**
      * Открытие соединения с БД.
+     * @param baseUrl url БД WordPress
+     * @param user пользователь БД WordPress
+     * @param password пароль БД WordPress
      */
-    public static void connect() {
+    public static void connect(String baseUrl, String user, String password) {
         try {
             System.out.println("Открывается соединение с БД");
             Properties props = new Properties();
-            props.setProperty("user", secretsProvider.getProperty("db.user"));
-            props.setProperty("password", secretsProvider.getProperty("db.password"));
+            props.setProperty("user", user);
+            props.setProperty("password", password);
             connection = DriverManager.getConnection(
-                    envLocalProvider.getProperty("db.url"),
+                        baseUrl,
                         props);
             statement = connection.createStatement();
         } catch (SQLException e) {
