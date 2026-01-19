@@ -46,7 +46,7 @@ public final class PropertyProvider {
     /**
      * Загрузить параметр из .properties-файла.
      * @param key ключ, для нахождения параметра
-     * @return параметр, найденный по ключю
+     * @return параметр, найденный по ключу
      */
     public String getProperty(final String key) {
         return properties.getProperty(key);

@@ -78,10 +78,10 @@ public final class BaseRequests {
                     .post(WP_POSTS)
                 .then()
                     .statusCode(201)
-                    .body("id", instanceOf(Integer.class))
-                    .body("status", equalTo(postPojo.getStatus()))
-                    .body("title.rendered", equalTo(postPojo.getTitle()))
-                    .body("content.rendered", equalTo(contentExpected))
+                    .body("id", instanceOf(Integer.class),
+                            "status", equalTo(postPojo.getStatus()),
+                            "title.rendered", equalTo(postPojo.getTitle()),
+                            "content.rendered", equalTo(contentExpected))
                 .extract()
                     .jsonPath().getInt("id");
 
@@ -108,10 +108,10 @@ public final class BaseRequests {
                 .patch(WP_POSTS + "/{id}")
             .then()
                 .statusCode(200)
-                .body("id", equalTo(postId))
-                .body("status", equalTo(postPojo.getStatus()))
-                .body("title.rendered", equalTo(postPojo.getTitle()))
-                .body("content.rendered", equalTo(contentExpected));
+                .body("id", equalTo(postId),"status",
+                        equalTo(postPojo.getStatus()), "title.rendered",
+                        equalTo(postPojo.getTitle()), "content.rendered",
+                        equalTo(contentExpected));
     }
 
     /**
@@ -152,8 +152,8 @@ public final class BaseRequests {
                         .delete(WP_POSTS + "/{id}&force=true")
                     .then()
                         .statusCode(200)
-                        .body("deleted", equalTo(true))
-                        .body("previous.id", equalTo(postId));
+                        .body("deleted", equalTo(true),
+                                "previous.id", equalTo(postId));
         }
 
         postsId.clear();
@@ -179,11 +179,11 @@ public final class BaseRequests {
                     .post(WP_COMMENTS)
                 .then()
                     .statusCode(201)
-                    .body("id", instanceOf(Integer.class))
-                    .body("post", equalTo(commentPojo.getPostId()))
-                    .body("author_name", equalTo(commentPojo.getAuthorName()))
-                    .body("author_email", equalTo(commentPojo.getAuthorEmail()))
-                    .body("content.rendered", equalTo(contentExpected))
+                    .body("id", instanceOf(Integer.class),
+                            "post", equalTo(commentPojo.getPostId()),
+                            "author_name", equalTo(commentPojo.getAuthorName()),
+                            "author_email", equalTo(commentPojo.getAuthorEmail()),
+                            "content.rendered", equalTo(contentExpected))
                 .extract()
                     .jsonPath().getInt("id");
 
@@ -210,11 +210,11 @@ public final class BaseRequests {
                     .patch(WP_COMMENTS + "/{id}")
                 .then()
                     .statusCode(200)
-                    .body("id", equalTo(commId))
-                    .body("post", equalTo(commentPojo.getPostId()))
-                    .body("author_name", equalTo(commentPojo.getAuthorName()))
-                    .body("author_email", equalTo(commentPojo.getAuthorEmail()))
-                    .body("content.rendered", equalTo(contentExpected));
+                    .body("id", equalTo(commId),
+                            "post", equalTo(commentPojo.getPostId()),
+                            "author_name", equalTo(commentPojo.getAuthorName()),
+                            "author_email", equalTo(commentPojo.getAuthorEmail()),
+                            "content.rendered", equalTo(contentExpected));
     }
 
     /**
@@ -257,8 +257,8 @@ public final class BaseRequests {
                         .delete(WP_COMMENTS + "/{id}&force=true")
                     .then()
                         .statusCode(200)
-                        .body("deleted", equalTo(true))
-                        .body("previous.id", equalTo(commId));
+                        .body("deleted", equalTo(true),
+                                "previous.id", equalTo(commId));
         }
 
         commentsId.clear();
