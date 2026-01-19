@@ -37,7 +37,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/posts с телом запро
         "content": { "rendered": "<p>sample text</p>\n" }
     }
 
-### 1.1.2. Проверка создания поста в БД:
+### 1.1.2. Получения созданного поста через запрос к БД:
 
 Предусловия: Создан пост: JSON
 
@@ -64,7 +64,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/posts с телом запро
     post_title = “New post”
     post_content = "sample text"
 
-### 1.1.3. Проверка создания поста через GET запрос:
+### 1.1.3. Получение созданного поста через GET запрос:
 
 Предусловия: Создан пост: JSON
 
@@ -110,7 +110,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/posts/{post_id} с телом 
         "title": { "rendered": "New new post" }
     }
 
-### 1.2.2. Проверка изменения поста в БД:
+### 1.2.2. Получения изменённого поста через запрос к БД:
 
 Предусловия: Создан пост: JSON
 
@@ -148,7 +148,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/posts/{post_id} с телом 
     post_title = “New new post”
     post_content = "sample text"
 
-### 1.2.3. Проверка изменения поста через GET запрос:
+### 1.2.3. Получение изменённого поста через GET запрос:
 
 Предусловия: Создан пост: JSON 
 
@@ -200,7 +200,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/posts/{post_id} с телом 
         "previous": { "id": {post_id} }
     }
 
-### 1.3.2. Проверка удаление поста в БД:
+### 1.3.2. Получения удалённого поста через запрос к БД:
 
 Предусловия: Создан пост с "id" = {post_id}, произведено соединение с mysql БД wordpress, в запросе DELETE использован Basic Auth c корректным логином и паролем
 
@@ -221,7 +221,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/posts/{post_id} с телом 
 
 SQL запрос вернул пустой набор результатов
 
-### 1.3.3. Проверка удаления поста через GET запрос:
+### 1.3.3. Получение удалённого поста через GET запрос:
 
 Предусловия: Создан пост с "id" = {post_id}, в запросе DELETE использован Basic Auth c корректным логином и паролем
 
@@ -265,7 +265,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/comments с телом зап�
         "content": { "rendered": "<p>sample content</p>\n" }
     }
 
-### 2.1.2. Проверка создание комментария в БД:
+### 2.1.2. Получения созданного комментария через запрос к БД:
 
 Предусловия: Создан пост с "id" = {post_id}, cоздан комментарий: JSON 
 
@@ -295,7 +295,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/comments с телом зап�
     comment_content = “sample_content”
 
 
-### 2.1.3. Проверка создания комментария через GET запрос:
+### 2.1.3. Получение созданного комментария через GET запрос:
 
 Предусловия: Создан пост "id" = {post_id}, cоздан комментарий: JSON
 
@@ -342,7 +342,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/comments/{comm_id}
         "author_name": "Anonymous"
     }
 
-### 2.2.2. Проверка изменения комментария в БД:
+### 2.2.2. Получения изменённого комментария через запрос к БД:
 
 Предусловия: Создан пост с "id" = {post_id}, создан комментарий: JSON
 
@@ -381,7 +381,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/comments/{comm_id}
     comment_author_email = “unowen@unknown.com”,
     comment_content = “sample_content”
 
-### 2.2.3. Проверка изменения комментария через GET запрос:
+### 2.2.3. Получение изменённого комментария через GET запрос:
 
 Предусловия: Создан пост "id" = {post_id}, cоздан комментарий: JSON
 
@@ -432,7 +432,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/comments/{comm_id}
         "previous": { "id": {comm_id} }
     }
 
-### 2.3.2. Удаление комментария:
+### 2.3.2. Получения удалённого комментария через запрос к БД:
 
 Предусловия: Создан комментарий с "id" = {comm_id}, произведено соединение с БД mysql, в запросе DELETE использован Basic Auth c корректным логином и паролем
 
@@ -452,7 +452,7 @@ http://localhost:8000/index.php?rest_route=/wp/v2/comments/{comm_id}
 
 SQL запрос вернул пустой набор результатов
 
-### 2.3.3. Удаление комментария:
+### 2.3.3. Получение удалённого комментария через GET запрос:
 
 Предусловия: Создан комментарий с "id" = {comm_id}, в запросах DELETE, GET использован Basic Auth c корректным логином и паролем
 

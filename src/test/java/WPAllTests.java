@@ -13,9 +13,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Класс тестов API для WordPress.
+ * Объединённый класс тестов REST API для WordPress.
  */
-public class APITest {
+public class WPAllTests {
 
     /**
      * Список ID постов.
@@ -71,10 +71,7 @@ public class APITest {
                 envLocalProvider.getProperty("base.url"),
                 secretsProvider.getProperty("api.username"),
                 secretsProvider.getProperty("api.password"));
-        DBHelper.connect(
-                envLocalProvider.getProperty("db.url"),
-                secretsProvider.getProperty("db.user"),
-                secretsProvider.getProperty("db.password"));
+        DBHelper.connect(envLocalProvider.getProperty("db.url"), secretsProvider.getProperty("db.user"), secretsProvider.getProperty("db.password"));
     }
 
     /**

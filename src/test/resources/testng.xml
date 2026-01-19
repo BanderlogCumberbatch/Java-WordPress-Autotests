@@ -1,8 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.1.dtd">
 <suite name="suite">
-   <test name="test suite">
+   <test name="WordPress test suite">
        <classes>
-           <class name="APITest"/>
+           <class name="posts.CreatePostTests"/>
+           <class name="posts.ChangePostTests"/>
+           <class name="posts.DeletePostTests"/>
+           <class name="posts.comments.CreateCommentTests"/>
+           <class name="posts.comments.ChangeCommentTests"/>
+           <class name="posts.comments.DeleteCommentTests"/>
       </classes>
     </test>
 </suite>
