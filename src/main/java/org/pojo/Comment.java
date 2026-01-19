@@ -36,4 +36,3 @@ public class Comment {
     @Builder.Default
     private String content = "sample text";
 }
-

@@ -20,11 +20,6 @@ public final class BaseRequests {
     private BaseRequests() { }
 
     /**
-     * URL WordPress.
-     */
-    private static final String WP_URL = "http://localhost:8000/";
-
-    /**
      * API для взаимодействия с постами.
      */
     private static final String WP_POSTS = "index.php?rest_route=/wp/v2/posts";
@@ -37,27 +32,32 @@ public final class BaseRequests {
     /**
      * Логин для WordPress.
      */
-    private static final String USERNAME = PropertyProvider
-            .getInstance().getProperty("api.username");
+    private static String username;
 
     /**
      * Пароль для WordPress.
      */
-    private static final String PASSWORD = PropertyProvider
-            .getInstance().getProperty("api.password");
+    private static String password;
 
     /**
      * Подготовка спецификации запроса.
+     * @param baseUrl базовый url WordPress
+     * @param username логин для WordPress
+     * @param password пароль для WordPress
      */
-    public static void initRequestSpecification() {
+    public static void initRequestSpecification(String baseUrl,
+                                                String username,
+                                                String password) {
 
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RequestSpecBuilder requestSpecBuilder = new RequestSpecBuilder();
         requestSpecBuilder
                 .setContentType(ContentType.JSON)
-                .setBaseUri(WP_URL)
+                .setBaseUri(baseUrl)
                 .setAccept(ContentType.JSON);
         requestSpecification = requestSpecBuilder.build();
+        BaseRequests.username = username;
+        BaseRequests.password = password;
     }
 
     /**
@@ -74,16 +74,16 @@ public final class BaseRequests {
 
         int postId = given()
                 .spec(requestSpecification)
-                .auth().preemptive().basic(USERNAME, PASSWORD)
+                .auth().preemptive().basic(username, password)
                 .body(postPojo)
                 .when()
                     .post(WP_POSTS)
                 .then()
                     .statusCode(201)
-                    .body("id", instanceOf(Integer.class))
-                    .body("status", equalTo(postPojo.getStatus()))
-                    .body("title.rendered", equalTo(postPojo.getTitle()))
-                    .body("content.rendered", equalTo(contentExpected))
+                    .body("id", instanceOf(Integer.class),
+                            "status", equalTo(postPojo.getStatus()),
+                            "title.rendered", equalTo(postPojo.getTitle()),
+                            "content.rendered", equalTo(contentExpected))
                 .extract()
                     .jsonPath().getInt("id");
 
@@ -103,17 +103,17 @@ public final class BaseRequests {
 
         given()
             .spec(requestSpecification)
-            .auth().preemptive().basic(USERNAME, PASSWORD)
+            .auth().preemptive().basic(username, password)
             .body(postPojo)
             .pathParam("id", postId)
             .when()
                 .patch(WP_POSTS + "/{id}")
             .then()
                 .statusCode(200)
-                .body("id", equalTo(postId))
-                .body("status", equalTo(postPojo.getStatus()))
-                .body("title.rendered", equalTo(postPojo.getTitle()))
-                .body("content.rendered", equalTo(contentExpected));
+                .body("id", equalTo(postId), "status",
+                        equalTo(postPojo.getStatus()), "title.rendered",
+                        equalTo(postPojo.getTitle()), "content.rendered",
+                        equalTo(contentExpected));
     }
 
     /**
@@ -148,14 +148,14 @@ public final class BaseRequests {
         for (Integer postId : postsId) {
             given()
                     .spec(requestSpecification)
-                    .auth().preemptive().basic(USERNAME, PASSWORD)
+                    .auth().preemptive().basic(username, password)
                     .pathParam("id", postId)
                     .when()
                         .delete(WP_POSTS + "/{id}&force=true")
                     .then()
                         .statusCode(200)
-                        .body("deleted", equalTo(true))
-                        .body("previous.id", equalTo(postId));
+                        .body("deleted", equalTo(true),
+                                "previous.id", equalTo(postId));
         }
 
         postsId.clear();
@@ -175,17 +175,17 @@ public final class BaseRequests {
 
         int commId = given()
                 .spec(requestSpecification)
-                .auth().preemptive().basic(USERNAME, PASSWORD)
+                .auth().preemptive().basic(username, password)
                 .body(commentPojo)
                 .when()
                     .post(WP_COMMENTS)
                 .then()
                     .statusCode(201)
-                    .body("id", instanceOf(Integer.class))
-                    .body("post", equalTo(commentPojo.getPostId()))
-                    .body("author_name", equalTo(commentPojo.getAuthorName()))
-                    .body("author_email", equalTo(commentPojo.getAuthorEmail()))
-                    .body("content.rendered", equalTo(contentExpected))
+                    .body("id", instanceOf(Integer.class),
+                            "post", equalTo(commentPojo.getPostId()),
+                            "author_name", equalTo(commentPojo.getAuthorName()),
+                            "author_email", equalTo(commentPojo.getAuthorEmail()),
+                            "content.rendered", equalTo(contentExpected))
                 .extract()
                     .jsonPath().getInt("id");
 
@@ -205,18 +205,18 @@ public final class BaseRequests {
 
         given()
                 .spec(requestSpecification)
-                .auth().preemptive().basic(USERNAME, PASSWORD)
+                .auth().preemptive().basic(username, password)
                 .body(commentPojo)
                 .pathParam("id", commId)
                 .when()
                     .patch(WP_COMMENTS + "/{id}")
                 .then()
                     .statusCode(200)
-                    .body("id", equalTo(commId))
-                    .body("post", equalTo(commentPojo.getPostId()))
-                    .body("author_name", equalTo(commentPojo.getAuthorName()))
-                    .body("author_email", equalTo(commentPojo.getAuthorEmail()))
-                    .body("content.rendered", equalTo(contentExpected));
+                    .body("id", equalTo(commId),
+                            "post", equalTo(commentPojo.getPostId()),
+                            "author_name", equalTo(commentPojo.getAuthorName()),
+                            "author_email", equalTo(commentPojo.getAuthorEmail()),
+                            "content.rendered", equalTo(contentExpected));
     }
 
     /**
@@ -228,7 +228,7 @@ public final class BaseRequests {
     public static Comment getCommentById(final int commId, final int statusCode) {
         Response response = given()
                 .spec(requestSpecification)
-                .auth().preemptive().basic(USERNAME, PASSWORD)
+                .auth().preemptive().basic(username, password)
                 .pathParam("id", commId)
                 .when()
                     .get(WP_COMMENTS + "/{id}")
@@ -236,12 +236,16 @@ public final class BaseRequests {
                     .statusCode(statusCode)
                     .extract().response();
 
-        return Comment.builder()
-                .postId((response.jsonPath().getInt("post")))
+        Comment.CommentBuilder commentBuilder = Comment.builder()
                 .authorName(response.jsonPath().getString("author_name"))
                 .authorEmail(response.jsonPath().getString("author_email"))
-                .content(response.jsonPath().getString("content.rendered"))
-                .build();
+                .content(response.jsonPath().getString("content.rendered"));
+
+        if (statusCode != 404) {
+            commentBuilder.postId((response.jsonPath().getInt("post")));
+        }
+
+        return commentBuilder.build();
     }
 
     /**
@@ -253,14 +257,14 @@ public final class BaseRequests {
         for (Integer commId : commentsId) {
             given()
                     .spec(requestSpecification)
-                    .auth().preemptive().basic(USERNAME, PASSWORD)
+                    .auth().preemptive().basic(username, password)
                     .pathParam("id", commId)
                     .when()
                         .delete(WP_COMMENTS + "/{id}&force=true")
                     .then()
                         .statusCode(200)
-                        .body("deleted", equalTo(true))
-                        .body("previous.id", equalTo(commId));
+                        .body("deleted", equalTo(true),
+                                "previous.id", equalTo(commId));
         }
 
         commentsId.clear();

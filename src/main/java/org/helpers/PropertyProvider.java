@@ -4,13 +4,9 @@ import lombok.Getter;
 import java.io.InputStream;
 import java.util.Properties;
 
+
 @Getter
 public final class PropertyProvider {
-
-    /**
-     * Текущий экземпляр класса.
-     */
-    private static PropertyProvider instance;
 
     /**
      * Класс для загрузки properties.
@@ -18,22 +14,29 @@ public final class PropertyProvider {
     private final Properties properties = new Properties();
 
     /**
-     * Загрузить .properties-файл, если он уже не загружен.
-     * @return текущий экземпляр класса
+     * Файл properties. по умолчанию
      */
-    public static PropertyProvider getInstance() {
-        if (instance == null) {
-            instance = new PropertyProvider();
-        }
-        return instance;
-    }
+    private static final String propertiesFile = "env_local.properties";
 
     /**
      * Загрузка .properties-файла.
+     * @param propertiesFile имя .properties-файла в папке resources
      */
-    private PropertyProvider() {
+    public PropertyProvider(final String propertiesFile) {
         try (InputStream input = getClass().getClassLoader()
-                .getResourceAsStream("secrets.properties")) {
+                .getResourceAsStream(propertiesFile)) {
+            properties.load(input);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load properties file", e);
+        }
+    }
+
+    /**
+     * Загрузка .properties-файла по умолчанию (env_local.properties).
+     */
+    public PropertyProvider() {
+        try (InputStream input = getClass().getClassLoader()
+                .getResourceAsStream(propertiesFile)) {
             properties.load(input);
         } catch (Exception e) {
             throw new RuntimeException("Failed to load properties file", e);
@@ -43,7 +46,7 @@ public final class PropertyProvider {
     /**
      * Загрузить параметр из .properties-файла.
      * @param key ключ, для нахождения параметра
-     * @return параметр, найденный по ключю
+     * @return параметр, найденный по ключу
      */
     public String getProperty(final String key) {
         return properties.getProperty(key);

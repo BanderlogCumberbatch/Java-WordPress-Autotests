@@ -8,22 +8,30 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-public class DBHelper {
+/**
+ * Класс для работы с БД wordpress.
+ */
+public final class DBHelper {
+
+    private DBHelper() { }
 
     private static Connection connection;
     private static Statement statement;
 
     /**
      * Открытие соединения с БД.
+     * @param baseUrl url БД WordPress
+     * @param user пользователь БД WordPress
+     * @param password пароль БД WordPress
      */
-    public static void connect() {
+    public static void connect(final String baseUrl, final String user, final String password) {
         try {
             System.out.println("Открывается соединение с БД");
             Properties props = new Properties();
-            props.setProperty("user", "wordpress");
-            props.setProperty("password", "wordpress");
+            props.setProperty("user", user);
+            props.setProperty("password", password);
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/wordpress",
+                        baseUrl,
                         props);
             statement = connection.createStatement();
         } catch (SQLException e) {
