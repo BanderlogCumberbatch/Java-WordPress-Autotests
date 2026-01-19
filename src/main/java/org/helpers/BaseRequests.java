@@ -20,9 +20,19 @@ public final class BaseRequests {
     private BaseRequests() { }
 
     /**
+     * Экземпляр PropertyProvider с загруженными локальными параметрами.
+     */
+    private static final PropertyProvider envLocalProvider = new PropertyProvider();
+
+    /**
+     * Экземпляр с загруженными секретами.
+     */
+    private static final PropertyProvider secretsProvider = new PropertyProvider("secrets.properties");
+
+    /**
      * URL WordPress.
      */
-    private static final String WP_URL = "http://localhost:8000/";
+    private static final String WP_URL = envLocalProvider.getProperty("base.url");
 
     /**
      * API для взаимодействия с постами.
@@ -37,14 +47,12 @@ public final class BaseRequests {
     /**
      * Логин для WordPress.
      */
-    private static final String USERNAME = PropertyProvider
-            .getInstance().getProperty("api.username");
+    private static final String USERNAME = secretsProvider.getProperty("api.username");
 
     /**
      * Пароль для WordPress.
      */
-    private static final String PASSWORD = PropertyProvider
-            .getInstance().getProperty("api.password");
+    private static final String PASSWORD = secretsProvider.getProperty("api.password");
 
     /**
      * Подготовка спецификации запроса.

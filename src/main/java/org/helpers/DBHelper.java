@@ -8,10 +8,23 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-public class DBHelper {
+/**
+ * Класс для работы с БД wordpress.
+ */
+public final class DBHelper {
 
     private static Connection connection;
     private static Statement statement;
+
+    /**
+     * Экземпляр PropertyProvider с загруженными локальными параметрами.
+     */
+    private static final PropertyProvider envLocalProvider = new PropertyProvider();
+
+    /**
+     * Экземпляр PropertyProvider с загруженными секретами.
+     */
+    private static final PropertyProvider secretsProvider = new PropertyProvider("secrets.properties");
 
     /**
      * Открытие соединения с БД.
@@ -20,10 +33,10 @@ public class DBHelper {
         try {
             System.out.println("Открывается соединение с БД");
             Properties props = new Properties();
-            props.setProperty("user", "wordpress");
-            props.setProperty("password", "wordpress");
+            props.setProperty("user", secretsProvider.getProperty("db.user"));
+            props.setProperty("password", secretsProvider.getProperty("db.password"));
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/wordpress",
+                    envLocalProvider.getProperty("db.url"),
                         props);
             statement = connection.createStatement();
         } catch (SQLException e) {
